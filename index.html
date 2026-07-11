@@ -4,14 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MGIT CRT Training Program Schedule</title>
-    <!-- Tailwind CSS for sleek, modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for clean icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800">
 
-    <!-- Header Section -->
     <header class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
@@ -19,15 +17,11 @@
                     MGIT
                 </div>
                 <div class="space-y-0.5">
-                    <!-- 1. Main Heading -->
                     <h1 class="text-xl md:text-2xl font-bold tracking-tight">Mahatma Gandhi Institute of Technology(A)</h1>
-                    <!-- 2. Sub Heading -->
                     <p class="text-sm font-medium text-blue-200 tracking-wide">Training & Placement Cell</p>
-                    <!-- 3. Academic Year Sub Heading -->
                     <p class="text-xs text-blue-300 font-normal">CRT Training Program Schedule for the Academic Year 2026-2027</p>
                 </div>
             </div>
-            <!-- Live Status Indicator -->
             <div class="flex items-center gap-2 bg-blue-800 px-3 py-1.5 rounded-full text-xs font-medium border border-blue-700 shadow-inner">
                 <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
                 <span>Live Sync Active</span>
@@ -35,19 +29,15 @@
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main class="max-w-7xl mx-auto px-4 py-8">
         
-        <!-- Controls: Search & Filters -->
         <div class="bg-white p-6 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row gap-4 justify-between items-center border border-gray-100">
-            <!-- Search Bar -->
             <div class="relative w-full md:w-96">
                 <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                 <input type="text" id="searchInput" placeholder="Search schedule..." 
                        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
             </div>
             
-            <!-- Quick Actions -->
             <div class="flex w-full md:w-auto gap-3 justify-end">
                 <button onclick="fetchScheduleData()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition text-sm font-medium">
                     <i class="fa-solid fa-rotate"></i> Refresh Data
@@ -55,41 +45,32 @@
             </div>
         </div>
 
-        <!-- Schedule Container -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-            <!-- Loading State -->
             <div id="loading" class="py-20 flex flex-col items-center justify-center gap-3 text-gray-500">
                 <i class="fa-solid fa-spinner animate-spin text-3xl text-blue-600"></i>
                 <p class="font-medium">Loading dynamic schedule...</p>
             </div>
 
-            <!-- Error State -->
             <div id="errorState" class="hidden py-16 px-4 text-center text-red-600">
                 <i class="fa-solid fa-triangle-exclamation text-4xl mb-3"></i>
                 <p class="font-semibold text-lg">Failed to load live schedule.</p>
-                <p class="text-sm text-gray-500 mt-1">Please check your Google Sheet CSV URL configuration.</p>
+                <p id="errorSubText" class="text-sm text-gray-500 mt-1">Please check your Google Sheet CSV URL configuration.</p>
             </div>
 
-            <!-- Dynamic Table View (Centered Headings and Data) -->
             <div class="overflow-x-auto hidden md:block">
                 <table class="w-full border-collapse">
                     <thead>
                         <tr id="tableHeaderRow" class="bg-gray-50 border-b border-gray-200 text-gray-600 font-semibold text-sm tracking-wider uppercase text-center">
-                            <!-- Dynamic headers will be injected here with center alignment -->
-                        </tr>
+                            </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-100 text-center">
-                        <!-- Dynamic centered rows will be injected here -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
-            <!-- Card View (Fallback for Mobile Devices) -->
             <div id="cardView" class="block md:hidden divide-y divide-gray-100">
-                <!-- Dynamic responsive layout components injected here -->
-            </div>
+                </div>
 
-            <!-- No Results Found -->
             <div id="noResults" class="hidden py-16 text-center text-gray-500">
                 <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
                 <p>No records match your criteria.</p>
@@ -97,77 +78,60 @@
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="text-center py-8 text-xs text-gray-400 border-t border-gray-200 mt-12">
         &copy; 2026 Mahatma Gandhi Institute of Technology (MGIT). All rights reserved.
     </footer>
 
-    <!-- Logic Script -->
     <script>
-        // Place your actual Google Sheet Published CSV URL below
+        // Your exact integrated Google Sheet CSV link
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSldT-EUlCpLxqAXzso5Da9xNVtwL6Ar9jJR295NsYWnIDecXZS3o0Mb3r_WIXsbA/pub?gid=637432394&single=true&output=csv';
         
         let localScheduleData = [];
         let columnKeys = [];
 
-        // Dynamic CSV Parser
-        function parseCSV(text) {
-            let lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
-            if(lines.length === 0) return { headers: [], data: [] };
-            
-            // Extract Headers dynamically from the very first row
-            const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
-            
-            const data = [];
-            for (let i = 1; i < lines.length; i++) {
-                const matches = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
-                const cleanRow = matches.map(val => val.trim().replace(/^["']|["']$/g, ''));
-                
-                let obj = {};
-                headers.forEach((header, index) => {
-                    obj[header] = cleanRow[index] || '';
-                });
-                data.push(obj);
-            }
-            return { headers, data };
-        }
-
-        // Fetch Data from Google Sheets
-        async function fetchScheduleData() {
+        // Fetch Data from Google Sheets using PapaParse (bypasses basic text fetching CORS bottlenecks)
+        function fetchScheduleData() {
             const loadingEl = document.getElementById('loading');
             const errorEl = document.getElementById('errorState');
             
             loadingEl.classList.remove('hidden');
             errorEl.classList.add('hidden');
-            
-            if (CSV_URL.startsWith('YOUR_')) {
-                loadingEl.classList.add('hidden');
-                errorEl.classList.remove('hidden');
-                errorEl.querySelector('.text-sm').innerText = "Please replace 'YOUR_GOOGLE_SHEET_PUBLISHED_CSV_URL_HERE' with your real web-published CSV link.";
-                return;
-            }
 
-            try {
-                const response = await fetch(`${CSV_URL}?nocache=${new Date().getTime()}`);
-                if (!response.ok) throw new Error("Network issues");
-                
-                const dataText = await response.text();
-                const parsed = parseCSV(dataText);
-                
-                columnKeys = parsed.headers;
-                localScheduleData = parsed.data;
-                
-                loadingEl.classList.add('hidden');
-                renderHeaders();
-                renderData(localScheduleData);
-            } catch (error) {
-                console.error("Error configuration loading:", error);
-                loadingEl.classList.add('hidden');
-                errorEl.classList.remove('hidden');
-            }
+            // Using PapaParse remote file downloader with cache-busting
+            Papa.parse(`${CSV_URL}&nocache=${new Date().getTime()}`, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.errors.length > 0 && results.data.length === 0) {
+                        handleFetchError("Parsing error occurred while processing data stream.");
+                        return;
+                    }
+                    
+                    columnKeys = results.meta.fields;
+                    localScheduleData = results.data;
+                    
+                    loadingEl.classList.add('hidden');
+                    renderHeaders();
+                    renderData(localScheduleData);
+                },
+                error: function(err) {
+                    handleFetchError(err.message || "Browser CORS security blocked the direct local file access.");
+                }
+            });
         }
 
-        // 1. Dynamically Render Headers mapped directly from Sheet Row 1 (Centered)
+        function handleFetchError(message) {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('errorState');
+            const errorSubText = document.getElementById('errorSubText');
+            
+            loadingEl.classList.add('hidden');
+            errorEl.classList.remove('hidden');
+            errorSubText.innerText = message + " Tip: Try viewing this file through a local web server (like VS Code Live Server) or hosting it on a platform like GitHub Pages.";
+        }
+
+        // 1. Dynamically Render Headers (Centered)
         function renderHeaders() {
             const headerRow = document.getElementById('tableHeaderRow');
             headerRow.innerHTML = '';
@@ -195,7 +159,7 @@
             }
             noResults.classList.add('hidden');
 
-            // Populate Desktop Table (Middle Text Alignment Applied)
+            // Populate Desktop Table
             data.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-gray-50/70 transition text-sm text-gray-700 text-center";
@@ -203,14 +167,14 @@
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
                     td.className = "px-6 py-4 text-center align-middle font-medium text-gray-900";
-                    td.innerText = row[key] || '-';
+                    td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
 
-                // Populate Mobile Responsive Layout (Centered Layout)
+                // Populate Mobile Responsive Layout (Centered Card Structure)
                 const card = document.createElement('div');
-                card.className = "p-5 space-y-2 bg-white text-center";
+                card.className = "p-5 space-y-2 bg-white text-center border-b border-gray-100";
                 
                 let cardContent = ``;
                 columnKeys.forEach((key, index) => {

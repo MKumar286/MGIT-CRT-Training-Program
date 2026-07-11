@@ -1,385 +1,241 @@
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MGIT - Training Programs Confirmation</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>  
-    <style>
-        /* Reset and Frame Constraints */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        html {
-            overflow-x: auto;
-            overflow-y: auto;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            background-color: #ffffff;
-            color: #1e293b;
-            padding: 10px 15px 30px 15px; 
-            position: relative;
-        }
-
-        /* Screen-Pinned Custom Horizontal Scrollbar Styling */
-        html::-webkit-scrollbar, body::-webkit-scrollbar, .table-responsive-wrapper::-webkit-scrollbar {
-            height: 10px;
-        }
-        html::-webkit-scrollbar-track, body::-webkit-scrollbar-track, .table-responsive-wrapper::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        html::-webkit-scrollbar-thumb, body::-webkit-scrollbar-thumb, .table-responsive-wrapper::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 10px;
-            border: 2px solid #f1f5f9;
-        }
-        html::-webkit-scrollbar-thumb:hover, body::-webkit-scrollbar-thumb:hover, .table-responsive-wrapper::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* Branding Header Section Container with Mixed Blue-Pink Shifting Glow Panel */
-        .header-section {
-            text-align: center;
-            margin: 0 auto 20px auto; 
-            width: 100%;
-            padding: 20px 20px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2e0827 100%);
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
-        }
-
-        /* Embedded Dynamic Blue & Pink High-Focus Floating Colors Inside Header Panel */
-        .header-section::before, .header-section::after {
-            content: '';
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(40px);
-            opacity: 0.5;
-            z-index: 1;
-            pointer-events: none;
-        }
-        .header-section::before {
-            width: 160px;
-            height: 160px;
-            background: #00d2ff; 
-            top: -20%;
-            left: 10%;
-            animation: float-header-left 8s infinite ease-in-out alternate;
-        }
-        .header-section::after {
-            width: 180px;
-            height: 180px;
-            background: #ff007f; 
-            bottom: -30%;
-            right: 15%;
-            animation: float-header-right 10s infinite ease-in-out alternate;
-        }
-
-        @keyframes float-header-left {
-            0% { transform: translate(0px, 0px) scale(1); }
-            100% { transform: translate(30px, 15px) scale(1.15); }
-        }
-        @keyframes float-header-right {
-            0% { transform: translate(0px, 0px) scale(1); }
-            100% { transform: translate(-35px, -10px) scale(0.9); }
-        }
-
-        .main-heading, .sub-heading, .context-heading {
-            position: relative;
-            z-index: 2;
-        }
-
-        .main-heading {
-            font-size: 1.6rem; 
-            font-weight: 800; 
-            letter-spacing: -0.02em;
-            color: #ffffff; 
-            margin-bottom: 2px; 
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-
-        .sub-heading {
-            font-size: 1.1rem;
-            font-weight: 700; 
-            letter-spacing: 0.02em;
-            color: #cbd5e1; 
-            margin-bottom: 8px; 
-            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
-        }
-
-        .context-heading {
-            display: inline-block;
-            font-size: 0.85rem;
-            font-weight: 700; 
-            padding: 4px 14px;
-            background-color: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50px;
-            color: #00d2ff; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        /* Solid High-Contrast Container Card */
-        .table-card {
-            width: 100%; 
-            margin: 0 auto;
-            background: #ffffff;
-            border: 1px solid #e2e8f0; 
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            overflow: hidden;
-        }
-
-        /* Handles horizontal scrolling for excessive columns exactly like a sheet layout */
-        .table-responsive-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Structural Table Rules */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            table-layout: auto; 
-        }
-
-        th, td {
-            padding: 10px 14px; 
-            text-align: left; 
-            vertical-align: middle;
-            border: 1px solid #e2e8f0;
-        }
-
-        /* Explicitly shrink the first column (Serial Number) and center its text */
-        th:first-child, td:first-child {
-            width: 70px !important;
-            min-width: 70px !important;
-            max-width: 70px !important;
-            text-align: center !important;
-        }
-
-        /* Next-line Column Wrapping for Headers */
-        th {
-            background-color: #0f2e4a; 
-            color: #ffffff;
-            font-weight: 700; 
-            font-size: 0.85rem;
-            letter-spacing: 0.01em;
-            white-space: normal; 
-            word-wrap: break-word;
-            min-width: 150px;
-        }
-
-        /* Data Cells - Sets text wrapping dynamically for long values */
-        td {
-            font-weight: 600; 
-            color: #334155;
-            font-size: 0.85rem;
-            white-space: normal; 
-            word-break: break-word;
-            max-width: 260px;
-        }
-
-        /* Keep the action link button column clean and centered */
-        th:last-child, td:last-child {
-            text-align: center !important;
-            min-width: 110px;
-        }
-
-        tr {
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f8fafc; 
-        }
-
-        /* Cursor highlight focus tracker row effect */
-        tr:hover td {
-            background-color: rgba(255, 102, 0, 0.08) !important; 
-            color: #000000; 
-        }
-
-        /* Vibrant high-contrast color styling for the View action link button */
-        .view-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            padding: 5px 14px; 
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); 
-            color: #ffffff !important;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.78rem; 
-            font-weight: 700; 
-            transition: all 0.2s ease;
-            line-height: 1.2;
-            box-shadow: 0 2px 5px rgba(37, 99, 235, 0.25);
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-        .view-btn:hover {
-            transform: translateY(-1px);
-            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
-            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.4);
-        }
-
-        .link-icon {
-            width: 10px; 
-            height: 10px;
-            fill: currentColor;
-        }
-
-        /* UI Loading Layout */
-        .status-container {
-            padding: 30px;
-            text-align: center;
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #64748b;
-        }
-        .pulse {
-            animation: pulse-animation 2s infinite ease-in-out;
-        }
-        @keyframes pulse-animation {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-    </style>
+    <title>MGIT CRT Training Program Schedule</title>
+    <!-- Tailwind CSS for sleek, modern styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for clean icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-50 font-sans text-gray-800">
 
-    <div class="header-section">
-        <h1 class="main-heading">Mahatma Gandhi Institute of Technology (A)</h1>
-        <h2 class="sub-heading">Training & Placement Cell</h2>
-        <div class="context-heading">Mail Confirmation of the Selected Students by the Company</div>
-    </div>
-    
-    <div class="table-card">
-        <div id="status-display" class="status-container pulse">Loading live placement confirmation roster...</div>
-        <div class="table-responsive-wrapper">
-            <table id="sheet-table" style="display: none;">
-                <thead id="table-head"></thead>
-                <tbody id="table-body"></tbody>
-            </table>
+    <!-- Header Section -->
+    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                <div class="bg-white p-2.5 rounded-lg text-blue-900 font-extrabold text-2xl tracking-wider shadow-sm hidden sm:block">
+                    MGIT
+                </div>
+                <div class="space-y-0.5">
+                    <!-- 1. Main Heading -->
+                    <h1 class="text-xl md:text-2xl font-bold tracking-tight">Mahatma Gandhi Institute of Technology(A)</h1>
+                    <!-- 2. Sub Heading -->
+                    <p class="text-sm font-medium text-blue-200 tracking-wide">Training & Placement Cell</p>
+                    <!-- 3. Academic Year Sub Heading -->
+                    <p class="text-xs text-blue-300 font-normal">CRT Training Program Schedule for the Academic Year 2026-2027</p>
+                </div>
+            </div>
+            <!-- Live Status Indicator -->
+            <div class="flex items-center gap-2 bg-blue-800 px-3 py-1.5 rounded-full text-xs font-medium border border-blue-700 shadow-inner">
+                <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
+                <span>Live Sync Active</span>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <script>
-        const yourSpreadsheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSldT-EUlCpLxqAXzso5Da9xNVtwL6Ar9jJR295NsYWnIDecXZS3o0Mb3r_WIXsbA/pub?gid=637432394&single=true&output=csv';
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 py-8">
         
-        let globalDataGrid = [];
-
-        function initSheetDownload() {
-            Papa.parse(yourSpreadsheetUrl, {
-                download: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    globalDataGrid = results.data;
-                    renderHtmlTable(globalDataGrid);
-                },
-                error: function(err) {
-                    console.error("Data Load Error:", err);
-                    const statusBox = document.getElementById('status-display');
-                    statusBox.classList.remove('pulse');
-                    statusBox.innerHTML = `<span style="color:#ef4444; font-weight:700;">Unable to pull data. Check permissions.</span>`;
-                }
-            });
-        }
-
-        function isValidUrl(string) {
-            try {
-                const url = new URL(string.trim());
-                return url.protocol === "http:" || url.protocol === "https:";
-            } catch (_) {
-                return false;  
-            }
-        }
-
-        function renderHtmlTable(data) {
-            const tableHead = document.getElementById('table-head');
-            const tableBody = document.getElementById('table-body');
+        <!-- Controls: Search & Filters -->
+        <div class="bg-white p-6 rounded-xl shadow-sm mb-6 flex flex-col md:flex-row gap-4 justify-between items-center border border-gray-100">
+            <!-- Search Bar -->
+            <div class="relative w-full md:w-96">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="searchInput" placeholder="Search schedule..." 
+                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+            </div>
             
-            tableHead.innerHTML = "";
-            tableBody.innerHTML = "";
+            <!-- Quick Actions -->
+            <div class="flex w-full md:w-auto gap-3 justify-end">
+                <button onclick="fetchScheduleData()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition text-sm font-medium">
+                    <i class="fa-solid fa-rotate"></i> Refresh Data
+                </button>
+            </div>
+        </div>
 
-            if (!data || data.length === 0) {
-                document.getElementById('sheet-table').style.display = 'none';
-                document.getElementById('status-display').style.display = 'block';
-                document.getElementById('status-display').textContent = "No placement records available.";
+        <!-- Schedule Container -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+            <!-- Loading State -->
+            <div id="loading" class="py-20 flex flex-col items-center justify-center gap-3 text-gray-500">
+                <i class="fa-solid fa-spinner animate-spin text-3xl text-blue-600"></i>
+                <p class="font-medium">Loading dynamic schedule...</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="errorState" class="hidden py-16 px-4 text-center text-red-600">
+                <i class="fa-solid fa-triangle-exclamation text-4xl mb-3"></i>
+                <p class="font-semibold text-lg">Failed to load live schedule.</p>
+                <p class="text-sm text-gray-500 mt-1">Please check your Google Sheet CSV URL configuration.</p>
+            </div>
+
+            <!-- Dynamic Table View (Centered Headings and Data) -->
+            <div class="overflow-x-auto hidden md:block">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr id="tableHeaderRow" class="bg-gray-50 border-b border-gray-200 text-gray-600 font-semibold text-sm tracking-wider uppercase text-center">
+                            <!-- Dynamic headers will be injected here with center alignment -->
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody" class="divide-y divide-gray-100 text-center">
+                        <!-- Dynamic centered rows will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Card View (Fallback for Mobile Devices) -->
+            <div id="cardView" class="block md:hidden divide-y divide-gray-100">
+                <!-- Dynamic responsive layout components injected here -->
+            </div>
+
+            <!-- No Results Found -->
+            <div id="noResults" class="hidden py-16 text-center text-gray-500">
+                <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
+                <p>No records match your criteria.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-xs text-gray-400 border-t border-gray-200 mt-12">
+        &copy; 2026 Mahatma Gandhi Institute of Technology (MGIT). All rights reserved.
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // Place your actual Google Sheet Published CSV URL below
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSldT-EUlCpLxqAXzso5Da9xNVtwL6Ar9jJR295NsYWnIDecXZS3o0Mb3r_WIXsbA/pub?gid=637432394&single=true&output=csv';
+        
+        let localScheduleData = [];
+        let columnKeys = [];
+
+        // Dynamic CSV Parser
+        function parseCSV(text) {
+            let lines = text.split('\n').map(line => line.trim()).filter(line => line !== '');
+            if(lines.length === 0) return { headers: [], data: [] };
+            
+            // Extract Headers dynamically from the very first row
+            const headers = lines[0].split(',').map(h => h.trim().replace(/^["']|["']$/g, ''));
+            
+            const data = [];
+            for (let i = 1; i < lines.length; i++) {
+                const matches = lines[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || lines[i].split(',');
+                const cleanRow = matches.map(val => val.trim().replace(/^["']|["']$/g, ''));
+                
+                let obj = {};
+                headers.forEach((header, index) => {
+                    obj[header] = cleanRow[index] || '';
+                });
+                data.push(obj);
+            }
+            return { headers, data };
+        }
+
+        // Fetch Data from Google Sheets
+        async function fetchScheduleData() {
+            const loadingEl = document.getElementById('loading');
+            const errorEl = document.getElementById('errorState');
+            
+            loadingEl.classList.remove('hidden');
+            errorEl.classList.add('hidden');
+            
+            if (CSV_URL.startsWith('YOUR_')) {
+                loadingEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
+                errorEl.querySelector('.text-sm').innerText = "Please replace 'YOUR_GOOGLE_SHEET_PUBLISHED_CSV_URL_HERE' with your real web-published CSV link.";
                 return;
             }
 
-            // 1. Render Header Row dynamically directly from spreadsheet schema
-            const headerTr = document.createElement('tr');
-            data[0].forEach(headerText => {
-                const th = document.createElement('th');
-                th.textContent = headerText;
-                headerTr.appendChild(th);
-            });
-            tableHead.appendChild(headerTr);
-
-            // 2. Render Body Data Rows
-            for (let i = 1; i < data.length; i++) {
-                const rowData = data[i];
-                const tr = document.createElement('tr');
+            try {
+                const response = await fetch(`${CSV_URL}?nocache=${new Date().getTime()}`);
+                if (!response.ok) throw new Error("Network issues");
                 
-                rowData.forEach((cellText, cellIndex) => {
-                    const td = document.createElement('td');
-                    const cleanText = cellText.trim();
+                const dataText = await response.text();
+                const parsed = parseCSV(dataText);
+                
+                columnKeys = parsed.headers;
+                localScheduleData = parsed.data;
+                
+                loadingEl.classList.add('hidden');
+                renderHeaders();
+                renderData(localScheduleData);
+            } catch (error) {
+                console.error("Error configuration loading:", error);
+                loadingEl.classList.add('hidden');
+                errorEl.classList.remove('hidden');
+            }
+        }
 
-                    if (isValidUrl(cleanText)) {
-                        const actionButton = document.createElement('a');
-                        actionButton.href = cleanText;
-                        actionButton.target = "_blank";
-                        actionButton.className = "view-btn";
-                        
-                        actionButton.innerHTML = `
-                            <svg class="link-icon" viewBox="0 0 512 512">
-                                <path d="M432,320H400a16,16,0,0,0-16,16V448H64V128H176a16,16,0,0,0,16-16V80a16,16,0,0,0-16-16H48A48,48,0,0,0,0,112V464a48,48,0,0,0,48,48H400a48,48,0,0,0,48-48V336A16,16,0,0,0,432,320ZM488,0H344a24,24,0,0,0-24,24V40a24,24,0,0,0,24,24H420L203,281a24,24,0,0,0,0,34l14,14a24,24,0,0,0,34,0L468,112V168a24,24,0,0,0,24,24h16a24,24,0,0,0,24-24V24A24,24,0,0,0,488,0Z"/>
-                            </svg> View`;
-                        td.appendChild(actionButton);
-                    } else if (cellIndex === 2) {
-                        // FIX: Detect duration keywords (hrs/hours) in the 3rd column, place on top, and drop dates below
-                        const hoursRegex = /^(\d+\s*(?:hrs|hours|hr|hour|Hrs|Hours|HRS|HOURS)(?:\s*,)?)\s*(.*)$/;
-                        const match = cleanText.match(hoursRegex);
-                        
-                        if (match) {
-                            const hoursPart = match[1].replace(/,$/, '').trim();
-                            const datesPart = match[2].trim();
-                            
-                            if (datesPart) {
-                                td.innerHTML = `<span style="display: block; font-weight: 700; color: #0f2e4a;">${hoursPart}</span><span style="display: block; font-size: 0.76rem; color: #64748b; font-weight: 500; margin-top: 3px;">${datesPart}</span>`;
-                            } else {
-                                td.textContent = cellText;
-                            }
-                        } else {
-                            td.textContent = cellText;
-                        }
-                    } else {
-                        td.textContent = cellText;
-                    }
+        // 1. Dynamically Render Headers mapped directly from Sheet Row 1 (Centered)
+        function renderHeaders() {
+            const headerRow = document.getElementById('tableHeaderRow');
+            headerRow.innerHTML = '';
+            
+            columnKeys.forEach(headerText => {
+                const th = document.createElement('th');
+                th.className = "px-6 py-4 text-center border-b border-gray-200 bg-gray-50 font-bold text-gray-700 tracking-wider";
+                th.innerText = headerText;
+                headerRow.appendChild(th);
+            });
+        }
+
+        // 2. Dynamically Render Rows and Cell Contents (Centered)
+        function renderData(data) {
+            const tableBody = document.getElementById('tableBody');
+            const cardView = document.getElementById('cardView');
+            const noResults = document.getElementById('noResults');
+            
+            tableBody.innerHTML = '';
+            cardView.innerHTML = '';
+
+            if(data.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            }
+            noResults.classList.add('hidden');
+
+            // Populate Desktop Table (Middle Text Alignment Applied)
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/70 transition text-sm text-gray-700 text-center";
+                
+                columnKeys.forEach(key => {
+                    const td = document.createElement('td');
+                    td.className = "px-6 py-4 text-center align-middle font-medium text-gray-900";
+                    td.innerText = row[key] || '-';
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
-            }
 
-            document.getElementById('status-display').style.display = 'none';
-            document.getElementById('sheet-table').style.display = 'table';
+                // Populate Mobile Responsive Layout (Centered Layout)
+                const card = document.createElement('div');
+                card.className = "p-5 space-y-2 bg-white text-center";
+                
+                let cardContent = ``;
+                columnKeys.forEach((key, index) => {
+                    if(index === 0) {
+                        cardContent += `<div class="font-bold text-blue-900 text-lg">${row[key]}</div>`;
+                    } else {
+                        cardContent += `<div class="text-sm"><span class="text-gray-400 text-xs uppercase block font-semibold">${key}</span> ${row[key] || '-'}</div>`;
+                    }
+                });
+                card.innerHTML = cardContent;
+                cardView.appendChild(card);
+            });
         }
 
-        window.addEventListener('DOMContentLoaded', initSheetDownload);
-    </script>
+        // Dynamic Filtering
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredData = localScheduleData.filter(row => {
+                return Object.values(row).some(val => String(val).toLowerCase().includes(searchTerm));
+            });
+            renderData(filteredData);
+        });
 
+        // Initialize App on DOM Ready
+        window.addEventListener('DOMContentLoaded', fetchScheduleData);
+    </script>
 </body>
 </html>

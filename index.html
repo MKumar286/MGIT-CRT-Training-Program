@@ -12,9 +12,9 @@
 
     <header class="bg-[#16406C] text-white shadow-md sticky top-0 z-50 border-b-4 border-[#0f2c4d]">
         <div class="max-w-[99%] mx-auto px-4 py-3 flex flex-row items-center gap-5">
-            <img src="https://mgit.ac.in/wp-content/uploads/2021/07/MGIT-Logo.png" 
+            <img src="logo.jpg" 
                  alt="MGIT Logo" 
-                 class="h-16 sm:h-20 w-auto object-contain bg-white p-1 rounded shadow-md shrink-0 border border-gray-100"
+                 class="h-16 sm:h-22 w-auto object-contain bg-white p-1.5 rounded shadow-md shrink-0 border border-gray-100"
                  onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT+LOGO'">
             
             <div class="space-y-0.5">
@@ -133,7 +133,7 @@
             
             loadingEl.classList.add('hidden');
             errorEl.classList.remove('hidden');
-            errorSubText.innerText = message + " Tip: Please view this project via a development local web server environment.";
+            errorSubText.innerText = message + " Tip: Please run this file inside a local development server environment (like Live Server) or upload it to host online.";
         }
 
         // 1. Generate Headers (Thick Premium Solid Blue Accents, text-base font structure)
@@ -196,7 +196,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Matrix Table Generator (Enhanced Font Scaling, Tightened Cell Layout Boundaries)
+        // 4. Matrix Table Generator (Enhanced Font Scaling, Centered Rows)
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -217,7 +217,7 @@
                 
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
-                    td.className = "px-4 py-3.5 text-center align-middle font-semibold text-gray-800 border-x border-gray-100/70";
+                    td.className = "px-4 py-3.5 text-center align-middle font-bold text-gray-800 border-x border-gray-100/70";
                     td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
                 });

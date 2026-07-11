@@ -4,87 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MGIT CRT Training Program Schedule</title>
+    <!-- Tailwind CSS for sleek, modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for clean icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PapaParse Library to robustly parse the Google Sheets CSV stream -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800 antialiased min-h-screen flex flex-col">
+<body class="bg-gray-50 antialiased min-h-screen flex flex-col" style="font-family: 'Times New Roman', Times, serif;">
 
+    <!-- Header Section (Premium Brand Colors, Official Logo Left-Aligned) -->
     <header class="bg-[#16406C] text-white shadow-md sticky top-0 z-50 border-b-4 border-[#0f2c4d]">
-        <div class="max-w-[99%] mx-auto px-4 py-3 flex flex-row items-center gap-5">
+        <div class="max-w-[99%] mx-auto px-4 py-2.5 flex flex-row items-center gap-5">
+            <!-- Official MGIT Logo -->
             <img src="logo.jpg" 
                  alt="MGIT Logo" 
-                 class="h-16 sm:h-22 w-auto object-contain bg-white p-1.5 rounded shadow-md shrink-0 border border-gray-100"
+                 class="h-16 sm:h-20 w-auto object-contain bg-white p-1 rounded shadow-md shrink-0 border border-gray-100"
                  onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT+LOGO'">
             
+            <!-- Headings Array -->
             <div class="space-y-0.5">
                 <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight">Mahatma Gandhi Institute of Technology(A)</h1>
                 <p class="text-base sm:text-lg font-bold text-blue-200 tracking-wide">Training & Placement Cell</p>
                 <p class="text-xs sm:text-sm text-blue-100 font-medium">CRT Training Program Schedule for the Academic Year 2026-2027</p>
             </div>
 
-            <div class="ml-auto hidden xl:flex items-center gap-2 bg-[#0e2a4a] px-3 py-2 rounded-full text-xs font-bold border border-[#254b75] shadow-inner shrink-0">
+            <!-- Live Synchronizer Status -->
+            <div class="ml-auto hidden xl:flex items-center gap-2 bg-[#0e2a4a] px-3 py-1.5 rounded-full text-xs font-bold border border-[#254b75] shadow-inner shrink-0">
                 <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
                 <span>Live Sync Active</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-[99%] w-full mx-auto px-2 py-3 flex-1 flex flex-col space-y-3">
+    <!-- Main Content Grid (Maximized screen fit layout) -->
+    <main class="max-w-[99%] w-full mx-auto px-2 py-2 flex-1 flex flex-col space-y-2">
         
-        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 w-full">
+        <!-- Controls Bar: Compact Single Non-Scrolling Row Layout -->
+        <div class="bg-white p-2 rounded-xl shadow-sm border border-gray-200 flex flex-row items-center gap-2 w-full overflow-hidden">
             
-            <div class="relative w-full lg:w-80 shrink-0">
-                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base"></i>
-                <input type="text" id="searchInput" placeholder="Search data array..." 
-                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base font-medium transition">
+            <!-- Minimized Search Input Element -->
+            <div class="relative w-48 sm:w-64 shrink-0">
+                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <input type="text" id="searchInput" placeholder="Search schedule..." 
+                       class="w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium transition">
             </div>
             
-            <div id="dynamicFiltersContainer" class="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full overflow-x-auto py-1">
-                </div>
+            <!-- Dynamic Filters Container (Forced Single Row Alignment without wrapping or scrolling) -->
+            <div id="dynamicFiltersContainer" class="flex flex-row items-center gap-2 flex-1 min-w-0 overflow-hidden">
+                <!-- Dropdown fields are populated directly here -->
+            </div>
             
-            <button onclick="fetchScheduleData()" class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition text-base font-bold shrink-0 border border-gray-200">
-                <i class="fa-solid fa-rotate"></i> Refresh
+            <!-- Context Interaction Button -->
+            <button onclick="fetchScheduleData()" class="flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition text-sm font-bold shrink-0 border border-gray-200">
+                <i class="fa-solid fa-rotate text-xs"></i> Refresh
             </button>
         </div>
 
+        <!-- Timetable Dashboard Component -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 flex-1 flex flex-col">
+            <!-- Loading Interface -->
             <div id="loading" class="my-auto py-24 flex flex-col items-center justify-center gap-3 text-gray-500">
                 <i class="fa-solid fa-spinner animate-spin text-4xl text-blue-600"></i>
-                <p class="font-bold text-lg">Parsing live matrix components...</p>
+                <p class="font-bold text-xl">Parsing live matrix components...</p>
             </div>
 
+            <!-- Error Notification Node -->
             <div id="errorState" class="hidden my-auto py-20 px-4 text-center text-red-600">
                 <i class="fa-solid fa-triangle-exclamation text-5xl mb-3"></i>
-                <p class="font-bold text-xl">Failed to load live schedule.</p>
+                <p class="font-bold text-2xl">Failed to load live schedule.</p>
                 <p id="errorSubText" class="text-base text-gray-500 mt-2">Please verify network permissions.</p>
             </div>
 
+            <!-- Desktop View Mode (Centered Headers and Maximized Bold Content) -->
             <div class="overflow-x-auto hidden md:block w-full">
                 <table class="w-full border-collapse min-w-full">
                     <thead>
-                        <tr id="tableHeaderRow" class="bg-[#0f2c4d] text-white font-extrabold text-base tracking-wider uppercase text-center border-b-2 border-gray-300 shadow-sm">
-                            </tr>
+                        <tr id="tableHeaderRow" class="bg-[#0f2c4d] text-white font-extrabold text-base sm:text-lg tracking-wider uppercase text-center border-b-2 border-gray-300 shadow-sm">
+                            <!-- Populated on data return structure -->
+                        </tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-gray-200 text-center text-base">
-                        </tbody>
+                    <tbody id="tableBody" class="divide-y divide-gray-200 text-center">
+                        <!-- Table matrix contents rendered dynamically inside -->
+                    </tbody>
                 </table>
             </div>
 
+            <!-- Mobile Card View Alternative -->
             <div id="cardView" class="block md:hidden divide-y divide-gray-200">
-                </div>
+                <!-- Fallback card components rendered here -->
+            </div>
 
+            <!-- Null Array Matches Notice -->
             <div id="noResults" class="hidden my-auto py-24 text-center text-gray-500">
                 <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
-                <p class="text-lg font-bold">No training data records map to selected filters.</p>
+                <p class="text-xl font-bold">No training data records map to selected filters.</p>
             </div>
         </div>
     </main>
 
-    <footer class="text-center py-4 text-xs font-semibold text-gray-400 border-t border-gray-200 bg-white mt-4 shrink-0">
+    <!-- Footer System -->
+    <footer class="text-center py-3 text-xs font-semibold text-gray-400 border-t border-gray-200 bg-white mt-2 shrink-0">
         &copy; 2026 Mahatma Gandhi Institute of Technology (MGIT). All rights reserved.
     </footer>
 
+    <!-- Core Parsing Execution Script -->
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSldT-EUlCpLxqAXzso5Da9xNVtwL6Ar9jJR295NsYWnIDecXZS3o0Mb3r_WIXsbA/pub?gid=637432394&single=true&output=csv';
         
@@ -133,23 +157,23 @@
             
             loadingEl.classList.add('hidden');
             errorEl.classList.remove('hidden');
-            errorSubText.innerText = message + " Tip: Please run this file inside a local development server environment (like Live Server) or upload it to host online.";
+            errorSubText.innerText = message + " Tip: Run this project within a local web server (like Live Server in VS Code).";
         }
 
-        // 1. Generate Headers (Thick Premium Solid Blue Accents, text-base font structure)
+        // 1. Generate Headers (Thick Premium Solid Blue Accents)
         function renderHeaders() {
             const headerRow = document.getElementById('tableHeaderRow');
             headerRow.innerHTML = '';
             
             columnKeys.forEach(headerText => {
                 const th = document.createElement('th');
-                th.className = "px-4 py-4 text-center bg-[#113359] font-extrabold text-base text-white tracking-wide border-x border-[#0b2440]";
+                th.className = "px-4 py-4 text-center bg-[#113359] font-extrabold text-base md:text-lg text-white tracking-wide border-x border-[#0b2440]";
                 th.innerText = headerText;
                 headerRow.appendChild(th);
             });
         }
 
-        // 2. Build Single Row Inline Filters Track
+        // 2. Build Single Row Compact Filters Track (No wrap, no overflow scroll layout)
         function buildFilters() {
             const container = document.getElementById('dynamicFiltersContainer');
             container.innerHTML = '';
@@ -160,7 +184,8 @@
                                         .sort();
 
                 const select = document.createElement('select');
-                select.className = "min-w-[150px] flex-1 border border-gray-300 rounded-lg p-2 text-base font-semibold bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer transition text-gray-700 shadow-sm";
+                // flex-1 min-w-0 squeezes all dropdowns symmetrically into a single locked horizontal alignment line
+                select.className = "flex-1 min-w-0 border border-gray-300 rounded-lg p-1.5 text-xs sm:text-sm font-bold bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer transition text-gray-700 shadow-sm truncate";
                 select.innerHTML = `<option value="">All ${key}s</option>`;
 
                 uniqueValues.forEach(val => {
@@ -176,7 +201,7 @@
             });
         }
 
-        // 3. Dual Engine Filtering Model
+        // 3. Combined Filtering Calculations Track
         function applyCombinedFiltering() {
             const globalSearchTerm = document.getElementById('searchInput').value.toLowerCase();
             
@@ -196,7 +221,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Matrix Table Generator (Enhanced Font Scaling, Centered Rows)
+        // 4. Matrix Table Generator (Increased Font Sizes to Eliminate Empty Whitespace)
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -213,17 +238,18 @@
 
             data.forEach(row => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-blue-50/50 odd:bg-white even:bg-gray-50/40 transition text-base text-gray-900 font-medium border-b border-gray-200 text-center";
+                tr.className = "hover:bg-blue-50/50 odd:bg-white even:bg-gray-50/40 transition border-b border-gray-200 text-center";
                 
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
-                    td.className = "px-4 py-3.5 text-center align-middle font-bold text-gray-800 border-x border-gray-100/70";
+                    // Changed from text-base font-medium to text-lg md:text-xl font-bold for heavy visibility footprint
+                    td.className = "px-4 py-4 text-center align-middle text-lg md:text-xl font-bold text-gray-900 border-x border-gray-100/70 tracking-wide";
                     td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
 
-                // Mobile Layout Alternative
+                // Mobile Layout Alternative (Maintained Times New Roman footprint styling)
                 const card = document.createElement('div');
                 card.className = "p-5 space-y-2 bg-white text-center border-b border-gray-200";
                 
@@ -232,7 +258,7 @@
                     if(index === 0) {
                         cardContent += `<div class="font-extrabold text-[#16406C] text-xl pb-1 mb-2 border-b border-gray-100">${row[key]}</div>`;
                     } else {
-                        cardContent += `<div class="text-base"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${key}</span> <span class="font-bold text-gray-800">${row[key] || '-'}</span></div>`;
+                        cardContent += `<div class="text-base"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${key}</span> <span class="font-bold text-gray-900 text-lg">${row[key] || '-'}</span></div>`;
                     }
                 });
                 card.innerHTML = cardContent;

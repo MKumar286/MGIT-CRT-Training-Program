@@ -37,7 +37,7 @@
         </div>
     </header>
 
-    <!-- Main Content Grid (Maximized screen fit layout) -->
+    <!-- Main Content Grid -->
     <main class="max-w-[99%] w-full mx-auto px-2 py-2 flex-1 flex flex-col space-y-2">
         
         <!-- Controls Bar: Compact Single Non-Scrolling Row Layout -->
@@ -50,7 +50,7 @@
                        class="w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-bold transition">
             </div>
             
-            <!-- Dynamic Filters Container (Forced Single Row Alignment without wrapping or scrolling) -->
+            <!-- Dynamic Filters Container -->
             <div id="dynamicFiltersContainer" class="flex flex-row items-center gap-2 flex-1 min-w-0 overflow-hidden">
                 <!-- Dropdown fields are populated directly here via script -->
             </div>
@@ -71,12 +71,12 @@
                 <p id="errorSubText" class="text-base text-gray-500 mt-2">Please verify network permissions.</p>
             </div>
 
-            <!-- Desktop View Mode (Centered Headers and Balanced Column Content) -->
+            <!-- Desktop View Mode (Minimized Padding & Reduced Data Boldness) -->
             <div class="overflow-x-auto hidden md:block w-full">
                 <table class="w-full border-collapse min-w-full">
                     <thead>
-                        <tr id="tableHeaderRow" class="bg-[#0f2c4d] text-white font-extrabold text-base tracking-wider uppercase text-center border-b-2 border-gray-300 shadow-sm">
-                            <!-- Populated on data return structure -->
+                        <tr id="tableHeaderRow" class="bg-[#0f2c4d] text-white font-extrabold text-base tracking-wider text-center border-b-2 border-gray-300 shadow-sm">
+                            <!-- Populated on data return structure with custom case logic -->
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-200 text-center">
@@ -155,20 +155,25 @@
             errorSubText.innerText = message + " Tip: Run this project within a local web server environment (like Live Server in VS Code).";
         }
 
-        // 1. Generate Headers (Thick Premium Solid Dark Blue Accents)
+        // 1. Generate Headers (Strictly First Letter Capitalized, Reduced Row Height Padding)
         function renderHeaders() {
             const headerRow = document.getElementById('tableHeaderRow');
             headerRow.innerHTML = '';
             
             columnKeys.forEach(headerText => {
                 const th = document.createElement('th');
-                th.className = "px-4 py-3.5 text-center bg-[#113359] font-extrabold text-base text-white tracking-wide border-x border-[#0b2440]";
-                th.innerText = headerText;
+                // Decreased header height from py-3.5 to py-1.5
+                th.className = "px-4 py-1.5 text-center bg-[#113359] font-extrabold text-base text-white tracking-wide border-x border-[#0b2440]";
+                
+                // Formats the text string so first letter is capitalized and remaining letters are forced lowercase
+                const cleanText = headerText.trim();
+                th.innerText = cleanText.charAt(0).toUpperCase() + cleanText.slice(1).toLowerCase();
+                
                 headerRow.appendChild(th);
             });
         }
 
-        // 2. Build Single Row Compact Filters Track (Bold dropdown items configuration)
+        // 2. Build Single Row Compact Filters Track
         function buildFilters() {
             const container = document.getElementById('dynamicFiltersContainer');
             container.innerHTML = '';
@@ -179,8 +184,13 @@
                                         .sort();
 
                 const select = document.createElement('select');
+                
+                // Formats the dropdown placeholder string to follow first-letter capitalization rules
+                const cleanKey = key.trim();
+                const cleanLabel = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1).toLowerCase();
+                
                 select.className = "flex-1 min-w-0 border border-gray-300 rounded-lg p-1.5 text-xs sm:text-sm font-bold bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer transition text-gray-900 shadow-sm truncate";
-                select.innerHTML = `<option value="" class="font-bold">All ${key}s</option>`;
+                select.innerHTML = `<option value="" class="font-bold">All ${cleanLabel}s</option>`;
 
                 uniqueValues.forEach(val => {
                     select.innerHTML += `<option value="${val}" class="font-bold">${val}</option>`;
@@ -215,7 +225,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Matrix Table Generator (Balanced Data Font Size footprints applied)
+        // 4. Matrix Table Generator (Decreased Row Height and Softened Font Weight)
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -236,7 +246,9 @@
                 
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
-                    td.className = "px-4 py-3.5 text-center align-middle text-base md:text-lg font-bold text-gray-800 border-x border-gray-100/70 tracking-wide";
+                    // 1. Decreased row padding from py-3.5 to py-1 to fit maximum rows on screen
+                    // 2. Reduced font boldness from font-bold to font-normal for optimal readability
+                    td.className = "px-4 py-1 text-center align-middle text-base md:text-lg font-normal text-gray-800 border-x border-gray-100/70 tracking-wide";
                     td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
                 });
@@ -248,10 +260,13 @@
                 
                 let cardContent = ``;
                 columnKeys.forEach((key, index) => {
+                    const cleanKey = key.trim();
+                    const cleanLabel = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1).toLowerCase();
+                    
                     if(index === 0) {
                         cardContent += `<div class="font-extrabold text-[#16406C] text-xl pb-1 mb-2 border-b border-gray-100">${row[key]}</div>`;
                     } else {
-                        cardContent += `<div class="text-sm"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${key}</span> <span class="font-bold text-gray-900 text-base">${row[key] || '-'}</span></div>`;
+                        cardContent += `<div class="text-sm"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${cleanLabel}</span> <span class="font-medium text-gray-900 text-base">${row[key] || '-'}</span></div>`;
                     }
                 });
                 card.innerHTML = cardContent;

@@ -8,95 +8,90 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-50 font-sans text-gray-800">
+<body class="bg-gray-50 font-sans text-gray-800 antialiased min-h-screen flex flex-col">
 
-    <header class="bg-blue-900 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-6 flex flex-col items-center justify-center gap-3 text-center">
-            <div class="bg-white p-2 rounded-lg text-blue-900 font-extrabold text-xl tracking-wider shadow-sm w-fit">
-                MGIT
+    <header class="bg-[#16406C] text-white shadow-md sticky top-0 z-50 border-b-4 border-[#0f2c4d]">
+        <div class="max-w-[99%] mx-auto px-4 py-3 flex flex-row items-center gap-5">
+            <img src="https://mgit.ac.in/wp-content/uploads/2021/07/MGIT-Logo.png" 
+                 alt="MGIT Logo" 
+                 class="h-16 sm:h-20 w-auto object-contain bg-white p-1 rounded shadow-md shrink-0 border border-gray-100"
+                 onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT+LOGO'">
+            
+            <div class="space-y-0.5">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight">Mahatma Gandhi Institute of Technology(A)</h1>
+                <p class="text-base sm:text-lg font-bold text-blue-200 tracking-wide">Training & Placement Cell</p>
+                <p class="text-xs sm:text-sm text-blue-100 font-medium">CRT Training Program Schedule for the Academic Year 2026-2027</p>
             </div>
-            <div class="space-y-1">
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight">Mahatma Gandhi Institute of Technology(A)</h1>
-                <p class="text-sm sm:text-base font-semibold text-blue-200 tracking-wide">Training & Placement Cell</p>
-                <p class="text-xs sm:text-sm text-blue-300 font-normal">CRT Training Program Schedule for the Academic Year 2026-2027</p>
-            </div>
-            <div class="mt-1 flex items-center gap-2 bg-blue-800 px-3 py-1.5 rounded-full text-xs font-medium border border-blue-700 shadow-inner">
+
+            <div class="ml-auto hidden xl:flex items-center gap-2 bg-[#0e2a4a] px-3 py-2 rounded-full text-xs font-bold border border-[#254b75] shadow-inner shrink-0">
                 <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
                 <span>Live Sync Active</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-8">
+    <main class="max-w-[99%] w-full mx-auto px-2 py-3 flex-1 flex flex-col space-y-3">
         
-        <div class="bg-white p-6 rounded-xl shadow-sm mb-6 border border-gray-100 space-y-4">
-            <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
-                <div class="relative w-full md:w-96">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="searchInput" placeholder="Search across all fields..." 
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition text-sm">
-                </div>
-                
-                <div class="w-full md:w-auto flex justify-end">
-                    <button onclick="fetchScheduleData()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition text-sm font-medium w-full md:w-auto justify-center">
-                        <i class="fa-solid fa-rotate"></i> Refresh Data
-                    </button>
-                </div>
+        <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200 flex flex-col lg:flex-row items-stretch lg:items-center gap-3 w-full">
+            
+            <div class="relative w-full lg:w-80 shrink-0">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base"></i>
+                <input type="text" id="searchInput" placeholder="Search data array..." 
+                       class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-base font-medium transition">
             </div>
-
-            <div>
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-filter mr-1"></i> Filter By Column:</p>
-                <div id="dynamicFiltersContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                    </div>
-            </div>
+            
+            <div id="dynamicFiltersContainer" class="flex flex-wrap sm:flex-nowrap items-center gap-2 w-full overflow-x-auto py-1">
+                </div>
+            
+            <button onclick="fetchScheduleData()" class="flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition text-base font-bold shrink-0 border border-gray-200">
+                <i class="fa-solid fa-rotate"></i> Refresh
+            </button>
         </div>
 
-        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-            <div id="loading" class="py-20 flex flex-col items-center justify-center gap-3 text-gray-500">
-                <i class="fa-solid fa-spinner animate-spin text-3xl text-blue-600"></i>
-                <p class="font-medium">Loading schedule components...</p>
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 flex-1 flex flex-col">
+            <div id="loading" class="my-auto py-24 flex flex-col items-center justify-center gap-3 text-gray-500">
+                <i class="fa-solid fa-spinner animate-spin text-4xl text-blue-600"></i>
+                <p class="font-bold text-lg">Parsing live matrix components...</p>
             </div>
 
-            <div id="errorState" class="hidden py-16 px-4 text-center text-red-600">
-                <i class="fa-solid fa-triangle-exclamation text-4xl mb-3"></i>
-                <p class="font-semibold text-lg">Failed to load live schedule.</p>
-                <p id="errorSubText" class="text-sm text-gray-500 mt-1">Please check your Google Sheet CSV URL configuration.</p>
+            <div id="errorState" class="hidden my-auto py-20 px-4 text-center text-red-600">
+                <i class="fa-solid fa-triangle-exclamation text-5xl mb-3"></i>
+                <p class="font-bold text-xl">Failed to load live schedule.</p>
+                <p id="errorSubText" class="text-base text-gray-500 mt-2">Please verify network permissions.</p>
             </div>
 
-            <div class="overflow-x-auto hidden md:block">
-                <table class="w-full border-collapse">
+            <div class="overflow-x-auto hidden md:block w-full">
+                <table class="w-full border-collapse min-w-full">
                     <thead>
-                        <tr id="tableHeaderRow" class="bg-blue-900 text-white font-bold text-sm tracking-wider uppercase text-center border-b-2 border-blue-950">
+                        <tr id="tableHeaderRow" class="bg-[#0f2c4d] text-white font-extrabold text-base tracking-wider uppercase text-center border-b-2 border-gray-300 shadow-sm">
                             </tr>
                     </thead>
-                    <tbody id="tableBody" class="divide-y divide-gray-200 text-center">
+                    <tbody id="tableBody" class="divide-y divide-gray-200 text-center text-base">
                         </tbody>
                 </table>
             </div>
 
-            <div id="cardView" class="block md:hidden divide-y divide-gray-100">
+            <div id="cardView" class="block md:hidden divide-y divide-gray-200">
                 </div>
 
-            <div id="noResults" class="hidden py-16 text-center text-gray-500">
-                <i class="fa-regular fa-folder-open text-3xl mb-2"></i>
-                <p>No training sessions match selected filter parameters.</p>
+            <div id="noResults" class="hidden my-auto py-24 text-center text-gray-500">
+                <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
+                <p class="text-lg font-bold">No training data records map to selected filters.</p>
             </div>
         </div>
     </main>
 
-    <footer class="text-center py-8 text-xs text-gray-400 border-t border-gray-200 mt-12">
+    <footer class="text-center py-4 text-xs font-semibold text-gray-400 border-t border-gray-200 bg-white mt-4 shrink-0">
         &copy; 2026 Mahatma Gandhi Institute of Technology (MGIT). All rights reserved.
     </footer>
 
     <script>
-        // Your exact integrated Google Sheet CSV URL
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSldT-EUlCpLxqAXzso5Da9xNVtwL6Ar9jJR295NsYWnIDecXZS3o0Mb3r_WIXsbA/pub?gid=637432394&single=true&output=csv';
         
         let localScheduleData = [];
         let columnKeys = [];
         let activeFilters = {};
 
-        // Fetch Data from Google Sheets using PapaParse
         function fetchScheduleData() {
             const loadingEl = document.getElementById('loading');
             const errorEl = document.getElementById('errorState');
@@ -110,14 +105,13 @@
                 skipEmptyLines: true,
                 complete: function(results) {
                     if (results.errors.length > 0 && results.data.length === 0) {
-                        handleFetchError("Parsing error occurred while processing data stream.");
+                        handleFetchError("Parsing error while compiling data stream.");
                         return;
                     }
                     
                     columnKeys = results.meta.fields;
                     localScheduleData = results.data;
                     
-                    // Reset selected filtering configurations on complete load
                     activeFilters = {};
                     columnKeys.forEach(k => activeFilters[k] = "");
                     
@@ -127,7 +121,7 @@
                     applyCombinedFiltering();
                 },
                 error: function(err) {
-                    handleFetchError(err.message || "Browser configuration blocked network response streams.");
+                    handleFetchError(err.message || "Cross-Origin execution restrictions blocks local storage array access.");
                 }
             });
         }
@@ -139,42 +133,34 @@
             
             loadingEl.classList.add('hidden');
             errorEl.classList.remove('hidden');
-            errorSubText.innerText = message + " Note: To browse raw spreadsheet streams locally on your computer, launch via a localhost server structure.";
+            errorSubText.innerText = message + " Tip: Please view this project via a development local web server environment.";
         }
 
-        // 1. Dynamically Render Table Headers (Centered + Premium Thick Blue Style)
+        // 1. Generate Headers (Thick Premium Solid Blue Accents, text-base font structure)
         function renderHeaders() {
             const headerRow = document.getElementById('tableHeaderRow');
             headerRow.innerHTML = '';
             
             columnKeys.forEach(headerText => {
                 const th = document.createElement('th');
-                th.className = "px-6 py-4.5 text-center bg-blue-950 font-bold tracking-wider border-r border-blue-900 text-white shadow-sm";
+                th.className = "px-4 py-4 text-center bg-[#113359] font-extrabold text-base text-white tracking-wide border-x border-[#0b2440]";
                 th.innerText = headerText;
                 headerRow.appendChild(th);
             });
         }
 
-        // 2. Generate Dropdown Filter Select Components dynamically for every Column Header
+        // 2. Build Single Row Inline Filters Track
         function buildFilters() {
             const container = document.getElementById('dynamicFiltersContainer');
             container.innerHTML = '';
 
             columnKeys.forEach(key => {
-                // Collect unique values for this specific column
                 const uniqueValues = [...new Set(localScheduleData.map(item => item[key]))]
                                         .filter(val => val !== undefined && val !== null && val.trim() !== '')
                                         .sort();
 
-                const selectWrapper = document.createElement('div');
-                selectWrapper.className = "flex flex-col gap-1";
-
-                const label = document.createElement('label');
-                label.className = "text-xs font-semibold text-gray-500 truncate";
-                label.innerText = key;
-
                 const select = document.createElement('select');
-                select.className = "w-full border border-gray-300 rounded-lg p-2 text-xs bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer transition";
+                select.className = "min-w-[150px] flex-1 border border-gray-300 rounded-lg p-2 text-base font-semibold bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer transition text-gray-700 shadow-sm";
                 select.innerHTML = `<option value="">All ${key}s</option>`;
 
                 uniqueValues.forEach(val => {
@@ -186,24 +172,20 @@
                     applyCombinedFiltering();
                 });
 
-                selectWrapper.appendChild(label);
-                selectWrapper.appendChild(select);
-                container.appendChild(selectWrapper);
+                container.appendChild(select);
             });
         }
 
-        // 3. Combined Filter Engine (Global Search + Specific Column Dropdown Intersect)
+        // 3. Dual Engine Filtering Model
         function applyCombinedFiltering() {
             const globalSearchTerm = document.getElementById('searchInput').value.toLowerCase();
             
             const filteredResult = localScheduleData.filter(row => {
-                // Part A: Validate drop down specific choices
                 const matchesDropdowns = Object.keys(activeFilters).every(key => {
-                    if (!activeFilters[key]) return true; // default select item means pass
+                    if (!activeFilters[key]) return true;
                     return String(row[key]) === activeFilters[key];
                 });
 
-                // Part B: Validate global query text across all rows
                 const matchesGlobalSearch = Object.values(row).some(val => 
                     String(val).toLowerCase().includes(globalSearchTerm)
                 );
@@ -214,7 +196,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Dynamically Render Table Rows and Cell Contents (Centered text layout rules)
+        // 4. Matrix Table Generator (Enhanced Font Scaling, Tightened Cell Layout Boundaries)
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -229,29 +211,28 @@
             }
             noResults.classList.add('hidden');
 
-            // Populate Desktop Grid View Elements
             data.forEach(row => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-blue-50/40 odd:bg-white even:bg-gray-50/50 transition text-sm text-gray-700 text-center";
+                tr.className = "hover:bg-blue-50/50 odd:bg-white even:bg-gray-50/40 transition text-base text-gray-900 font-medium border-b border-gray-200 text-center";
                 
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
-                    td.className = "px-6 py-4 text-center align-middle font-medium text-gray-900 border-b border-gray-100";
+                    td.className = "px-4 py-3.5 text-center align-middle font-semibold text-gray-800 border-x border-gray-100/70";
                     td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
 
-                // Populate Mobile Responsive Layout Cards (Centered UI Layout structures)
+                // Mobile Layout Alternative
                 const card = document.createElement('div');
                 card.className = "p-5 space-y-2 bg-white text-center border-b border-gray-200";
                 
                 let cardContent = ``;
                 columnKeys.forEach((key, index) => {
                     if(index === 0) {
-                        cardContent += `<div class="font-extrabold text-blue-900 text-lg border-b pb-1 mb-2 border-gray-100">${row[key]}</div>`;
+                        cardContent += `<div class="font-extrabold text-[#16406C] text-xl pb-1 mb-2 border-b border-gray-100">${row[key]}</div>`;
                     } else {
-                        cardContent += `<div class="text-sm"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${key}</span> <span class="font-medium text-gray-800">${row[key] || '-'}</span></div>`;
+                        cardContent += `<div class="text-base"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${key}</span> <span class="font-bold text-gray-800">${row[key] || '-'}</span></div>`;
                     }
                 });
                 card.innerHTML = cardContent;
@@ -259,10 +240,7 @@
             });
         }
 
-        // Live Action Global Input Watcher
         document.getElementById('searchInput').addEventListener('input', applyCombinedFiltering);
-
-        // Bootstrap App Structure initialization
         window.addEventListener('DOMContentLoaded', fetchScheduleData);
     </script>
 </body>

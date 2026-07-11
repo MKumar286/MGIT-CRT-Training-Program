@@ -4,98 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MGIT CRT Training Program Schedule</title>
-    <!-- Tailwind CSS for sleek, modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for clean icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PapaParse Library to robustly parse the Google Sheets CSV stream -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-50 antialiased min-h-screen flex flex-col" style="font-family: 'Times New Roman', Times, serif;">
+<body class="bg-gray-50 antialiased min-h-screen flex flex-col" style="font-family: Arial, Helvetica, sans-serif;">
 
-    <!-- Header Section (Premium Brand Colors, Official Logo Left-Aligned) -->
-    <header class="bg-[#16406C] text-white shadow-md sticky top-0 z-50 border-b-4 border-[#0f2c4d]">
+    <header class="bg-gradient-to-r from-pink-600 via-pink-400 to-white text-slate-900 shadow-md sticky top-0 z-50 border-b-4 border-pink-700">
         <div class="max-w-[99%] mx-auto px-4 py-2.5 flex flex-row items-center gap-5">
-            <!-- Official MGIT Logo -->
             <img src="logo.jpg" 
                  alt="MGIT Logo" 
                  class="h-16 sm:h-20 w-auto object-contain bg-white p-1 rounded shadow-md shrink-0 border border-gray-100"
                  onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT+LOGO'">
             
-            <!-- Headings Array -->
             <div class="space-y-0.5">
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight">Mahatma Gandhi Institute of Technology(A)</h1>
-                <p class="text-base sm:text-lg font-bold text-blue-200 tracking-wide">Training & Placement Cell</p>
-                <p class="text-xs sm:text-sm text-blue-100 font-medium">CRT Training Program Schedule for the Academic Year 2026-2027</p>
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight text-slate-900">Mahatma Gandhi Institute of Technology(A)</h1>
+                <p class="text-base sm:text-lg font-bold text-slate-800 tracking-wide">Training & Placement Cell</p>
+                <p class="text-xs sm:text-sm text-slate-700 font-bold">CRT Training Program Schedule for the Academic Year 2026-2027</p>
             </div>
 
-            <!-- Live Synchronizer Status -->
-            <div class="ml-auto hidden xl:flex items-center gap-2 bg-[#0e2a4a] px-3 py-1.5 rounded-full text-xs font-bold border border-[#254b75] shadow-inner shrink-0">
-                <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
+            <div class="ml-auto hidden xl:flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full text-xs font-bold border border-pink-300 text-pink-700 shadow-inner shrink-0">
+                <span class="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></span>
                 <span>Live Sync Active</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Grid (Maximized screen fit layout) -->
     <main class="max-w-[99%] w-full mx-auto px-2 py-2 flex-1 flex flex-col space-y-2">
         
-        <!-- Controls Bar: Compact Single Non-Scrolling Row Layout -->
         <div class="bg-white p-2 rounded-xl shadow-sm border border-gray-200 flex flex-row items-center gap-2 w-full overflow-hidden">
             
-            <!-- Minimized Search Input Element -->
             <div class="relative w-48 sm:w-64 shrink-0">
-                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                 <input type="text" id="searchInput" placeholder="Search schedule..." 
-                       class="w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-medium transition">
+                       class="w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-sm font-bold transition">
             </div>
             
-            <!-- Dynamic Filters Container (Forced Single Row Alignment without wrapping or scrolling) -->
             <div id="dynamicFiltersContainer" class="flex flex-row items-center gap-2 flex-1 min-w-0 overflow-hidden">
-                <!-- Dropdown fields are populated directly here -->
-            </div>
-            
-            <!-- Context Interaction Button -->
-            <button onclick="fetchScheduleData()" class="flex items-center justify-center gap-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-lg transition text-sm font-bold shrink-0 border border-gray-200">
-                <i class="fa-solid fa-rotate text-xs"></i> Refresh
-            </button>
+                </div>
         </div>
 
-        <!-- Timetable Dashboard Component -->
         <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-200 flex-1 flex flex-col">
-            <!-- Loading Interface -->
             <div id="loading" class="my-auto py-24 flex flex-col items-center justify-center gap-3 text-gray-500">
-                <i class="fa-solid fa-spinner animate-spin text-4xl text-blue-600"></i>
-                <p class="font-bold text-xl">Parsing live matrix components...</p>
+                <i class="fa-solid fa-spinner animate-spin text-4xl text-pink-600"></i>
+                <p class="font-bold text-xl text-gray-600">Parsing live matrix components...</p>
             </div>
 
-            <!-- Error Notification Node -->
             <div id="errorState" class="hidden my-auto py-20 px-4 text-center text-red-600">
                 <i class="fa-solid fa-triangle-exclamation text-5xl mb-3"></i>
                 <p class="font-bold text-2xl">Failed to load live schedule.</p>
                 <p id="errorSubText" class="text-base text-gray-500 mt-2">Please verify network permissions.</p>
             </div>
 
-            <!-- Desktop View Mode (Centered Headers and Maximized Bold Content) -->
             <div class="overflow-x-auto hidden md:block w-full">
                 <table class="w-full border-collapse min-w-full">
                     <thead>
-                        <tr id="tableHeaderRow" class="bg-[#0f2c4d] text-white font-extrabold text-base sm:text-lg tracking-wider uppercase text-center border-b-2 border-gray-300 shadow-sm">
-                            <!-- Populated on data return structure -->
-                        </tr>
+                        <tr id="tableHeaderRow" class="bg-[#0f2c4d] text-white font-extrabold text-base tracking-wider uppercase text-center border-b-2 border-gray-300 shadow-sm">
+                            </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-200 text-center">
-                        <!-- Table matrix contents rendered dynamically inside -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
-            <!-- Mobile Card View Alternative -->
             <div id="cardView" class="block md:hidden divide-y divide-gray-200">
-                <!-- Fallback card components rendered here -->
-            </div>
+                </div>
 
-            <!-- Null Array Matches Notice -->
             <div id="noResults" class="hidden my-auto py-24 text-center text-gray-500">
                 <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
                 <p class="text-xl font-bold">No training data records map to selected filters.</p>
@@ -103,12 +77,10 @@
         </div>
     </main>
 
-    <!-- Footer System -->
     <footer class="text-center py-3 text-xs font-semibold text-gray-400 border-t border-gray-200 bg-white mt-2 shrink-0">
         &copy; 2026 Mahatma Gandhi Institute of Technology (MGIT). All rights reserved.
     </footer>
 
-    <!-- Core Parsing Execution Script -->
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSldT-EUlCpLxqAXzso5Da9xNVtwL6Ar9jJR295NsYWnIDecXZS3o0Mb3r_WIXsbA/pub?gid=637432394&single=true&output=csv';
         
@@ -157,23 +129,23 @@
             
             loadingEl.classList.add('hidden');
             errorEl.classList.remove('hidden');
-            errorSubText.innerText = message + " Tip: Run this project within a local web server (like Live Server in VS Code).";
+            errorSubText.innerText = message + " Tip: Run this project within a local web server environment (like Live Server in VS Code).";
         }
 
-        // 1. Generate Headers (Thick Premium Solid Blue Accents)
+        // 1. Generate Headers (Thick Premium Solid Dark Blue Accents)
         function renderHeaders() {
             const headerRow = document.getElementById('tableHeaderRow');
             headerRow.innerHTML = '';
             
             columnKeys.forEach(headerText => {
                 const th = document.createElement('th');
-                th.className = "px-4 py-4 text-center bg-[#113359] font-extrabold text-base md:text-lg text-white tracking-wide border-x border-[#0b2440]";
+                th.className = "px-4 py-3.5 text-center bg-[#113359] font-extrabold text-base text-white tracking-wide border-x border-[#0b2440]";
                 th.innerText = headerText;
                 headerRow.appendChild(th);
             });
         }
 
-        // 2. Build Single Row Compact Filters Track (No wrap, no overflow scroll layout)
+        // 2. Build Single Row Compact Filters Track (Bold layout rules applied)
         function buildFilters() {
             const container = document.getElementById('dynamicFiltersContainer');
             container.innerHTML = '';
@@ -184,12 +156,12 @@
                                         .sort();
 
                 const select = document.createElement('select');
-                // flex-1 min-w-0 squeezes all dropdowns symmetrically into a single locked horizontal alignment line
-                select.className = "flex-1 min-w-0 border border-gray-300 rounded-lg p-1.5 text-xs sm:text-sm font-bold bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer transition text-gray-700 shadow-sm truncate";
-                select.innerHTML = `<option value="">All ${key}s</option>`;
+                // Added font-bold and text-gray-900 for bold dropdown items appearance
+                select.className = "flex-1 min-w-0 border border-gray-300 rounded-lg p-1.5 text-xs sm:text-sm font-bold bg-white focus:ring-2 focus:ring-pink-500 outline-none cursor-pointer transition text-gray-900 shadow-sm truncate";
+                select.innerHTML = `<option value="" class="font-bold">All ${key}s</option>`;
 
                 uniqueValues.forEach(val => {
-                    select.innerHTML += `<option value="${val}">${val}</option>`;
+                    select.innerHTML += `<option value="${val}" class="font-bold">${val}</option>`;
                 });
 
                 select.addEventListener('change', (e) => {
@@ -221,7 +193,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Matrix Table Generator (Increased Font Sizes to Eliminate Empty Whitespace)
+        // 4. Matrix Table Generator (Decreased Data Font Size slightly to text-base / text-lg)
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -242,23 +214,23 @@
                 
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
-                    // Changed from text-base font-medium to text-lg md:text-xl font-bold for heavy visibility footprint
-                    td.className = "px-4 py-4 text-center align-middle text-lg md:text-xl font-bold text-gray-900 border-x border-gray-100/70 tracking-wide";
+                    // Changed from text-lg md:text-xl down to text-base md:text-lg for optimized spacing footprints
+                    td.className = "px-4 py-3.5 text-center align-middle text-base md:text-lg font-bold text-gray-800 border-x border-gray-100/70 tracking-wide";
                     td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
 
-                // Mobile Layout Alternative (Maintained Times New Roman footprint styling)
+                // Mobile Layout Alternative
                 const card = document.createElement('div');
                 card.className = "p-5 space-y-2 bg-white text-center border-b border-gray-200";
                 
                 let cardContent = ``;
                 columnKeys.forEach((key, index) => {
                     if(index === 0) {
-                        cardContent += `<div class="font-extrabold text-[#16406C] text-xl pb-1 mb-2 border-b border-gray-100">${row[key]}</div>`;
+                        cardContent += `<div class="font-extrabold text-pink-700 text-xl pb-1 mb-2 border-b border-gray-100">${row[key]}</div>`;
                     } else {
-                        cardContent += `<div class="text-base"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${key}</span> <span class="font-bold text-gray-900 text-lg">${row[key] || '-'}</span></div>`;
+                        cardContent += `<div class="text-sm"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${key}</span> <span class="font-bold text-gray-900 text-base">${row[key] || '-'}</span></div>`;
                     }
                 });
                 card.innerHTML = cardContent;
@@ -266,8 +238,9 @@
             });
         }
 
-        document.getElementById('searchInput').addEventListener('input', applyCombinedFiltering);
+        // Run initialization routines on browser load
         window.addEventListener('DOMContentLoaded', fetchScheduleData);
+        document.getElementById('searchInput').addEventListener('input', applyCombinedFiltering);
     </script>
 </body>
 </html>

@@ -4,25 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MGIT CRT Training Program Schedule</title>
-    <!-- Tailwind CSS for sleek, modern styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for clean icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- PapaParse Library to robustly parse the Google Sheets CSV stream -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 <body class="bg-gray-100 antialiased min-h-screen flex flex-col" style="font-family: Arial, Helvetica, sans-serif;">
 
-    <!-- Header Section (Fully Responsive Scaling to prevent truncation) -->
     <header class="bg-[#0B1528] text-white shadow-md sticky top-0 z-50 border-b-4 border-[#FFD700]">
         <div class="max-w-[99%] mx-auto px-3 py-2 flex flex-row items-center gap-3 sm:gap-5">
-            <!-- Official MGIT Logo -->
             <img src="logo.jpg" 
                  alt="MGIT Logo" 
                  class="h-14 w-auto sm:h-20 object-contain bg-white p-1 rounded shadow-md shrink-0 border border-gray-100"
                  onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT'">
             
-            <!-- Headings Array with Fluid Text Sizes for Mobile Viewports -->
             <div class="min-w-0 flex-1">
                 <h1 class="text-base sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight text-[#FFD700] truncate sm:whitespace-normal">
                     Mahatma Gandhi Institute of Technology(A)
@@ -35,7 +29,6 @@
                 </p>
             </div>
 
-            <!-- Live Status Dot Indicator -->
             <div class="hidden md:flex items-center gap-2 bg-[#050B14] px-3 py-1.5 rounded-full text-xs font-bold border border-[#FFD700]/40 shadow-inner shrink-0 text-[#FFD700]">
                 <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
                 <span>Live Sync Active</span>
@@ -43,60 +36,46 @@
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main class="max-w-[99%] w-full mx-auto px-1 sm:px-2 py-2 flex-1 flex flex-col space-y-2 overflow-hidden">
         
-        <!-- Controls Bar: Fully responsive Horizontal Swiping Filter Layout for Mobile -->
         <div class="bg-white p-2 rounded-lg shadow-sm border border-gray-200 flex flex-row items-center gap-2 w-full overflow-hidden shrink-0">
             
-            <!-- Minimized Search Input Element -->
             <div class="relative w-36 sm:w-64 shrink-0">
                 <i class="fa-solid fa-magnifying-glass absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                 <input type="text" id="searchInput" placeholder="Search..." 
                        class="w-full pl-6 pr-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm font-bold transition">
             </div>
             
-            <!-- Dynamic Horizontal Scrollable Filter Track (Bypasses squishing buttons completely) -->
             <div id="dynamicFiltersContainer" class="flex flex-row items-center gap-1.5 flex-1 min-w-0 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 py-0.5 whitespace-nowrap">
-                <!-- Dropdown fields are populated directly here via script -->
-            </div>
+                </div>
         </div>
 
-        <!-- Timetable Dashboard Component -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
-            <!-- Loading Interface -->
             <div id="loading" class="my-auto py-24 flex flex-col items-center justify-center gap-3 text-gray-500">
                 <i class="fa-solid fa-spinner animate-spin text-4xl text-blue-600"></i>
                 <p class="font-bold text-lg text-gray-600">Parsing live schedule data...</p>
             </div>
 
-            <!-- Error Notification Node -->
             <div id="errorState" class="hidden my-auto py-20 px-4 text-center text-red-600">
                 <i class="fa-solid fa-triangle-exclamation text-5xl mb-3"></i>
                 <p class="font-bold text-2xl">Failed to load live schedule.</p>
                 <p id="errorSubText" class="text-base text-gray-500 mt-2">Please verify network permissions.</p>
             </div>
 
-            <!-- Desktop View Mode (Unchanged: Minimal padding, centered, bold-free rows) -->
             <div class="overflow-x-auto overflow-y-auto hidden md:block w-full max-h-[calc(100vh-165px)] relative">
                 <table class="w-full border-collapse min-w-full table-fixed">
                     <thead>
                         <tr id="tableHeaderRow" class="text-white font-extrabold text-base tracking-wider text-center border-b-2 border-gray-300">
-                            <!-- Populated dynamically via script -->
-                        </tr>
+                            </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-200 text-center">
-                        <!-- Desktop matrix rows injected here -->
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
 
-            <!-- Mobile Card View Alternative (Highly Compact Multi-Column Grid Layout) -->
             <div id="cardView" class="block md:hidden divide-y-2 divide-gray-200 overflow-y-auto max-h-[calc(100vh-155px)] bg-gray-50">
-                <!-- Compact mobile data rows injected here -->
-            </div>
+                </div>
 
-            <!-- Null Matches Notice -->
             <div id="noResults" class="hidden my-auto py-24 text-center text-gray-500">
                 <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
                 <p class="text-xl font-bold">No data records map to selected parameters.</p>
@@ -104,12 +83,10 @@
         </div>
     </main>
 
-    <!-- Footer System -->
     <footer class="text-center py-2 text-[10px] sm:text-xs font-semibold text-gray-400 border-t border-gray-200 bg-white mt-auto shrink-0">
         &copy; 2026 Mahatma Gandhi Institute of Technology (MGIT). All rights reserved.
     </footer>
 
-    <!-- Core Parsing Execution Script -->
     <script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSldT-EUlCpLxqAXzso5Da9xNVtwL6Ar9jJR295NsYWnIDecXZS3o0Mb3r_WIXsbA/pub?gid=637432394&single=true&output=csv';
         
@@ -192,7 +169,6 @@
                 const cleanKey = key.trim();
                 const cleanLabel = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1).toLowerCase();
                 
-                // shrink-0 prevents the dropdowns from folding down into squares on phone displays
                 select.className = "shrink-0 border border-gray-300 rounded-md px-2 py-1 text-xs font-bold bg-white focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer text-gray-800 shadow-sm max-w-[120px]";
                 select.innerHTML = `<option value="">All ${cleanLabel}s</option>`;
 
@@ -229,7 +205,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Compact Mobile Layout Matrix Renderer
+        // 4. Compact Data Matrix Renderer
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -245,33 +221,32 @@
             noResults.classList.add('hidden');
 
             data.forEach(row => {
-                // Desktop rendering loop (keeps the requested compact format)
+                // Desktop Rendering Loop
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-blue-50/50 odd:bg-white even:bg-gray-50/40 transition border-b border-gray-200 text-center";
                 
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
-                    td.className = "px-4 py-1 text-center align-middle text-base md:text-lg font-normal text-gray-800 border-x border-gray-100/70 tracking-wide break-words";
+                    // Font size modified slightly down to a crisp text-sm to pack structural rows clean
+                    td.className = "px-4 py-1 text-center align-middle text-sm font-normal text-gray-800 border-x border-gray-100/70 tracking-wide break-words";
                     td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
                 });
                 tableBody.appendChild(tr);
 
-                // NEW MOBILE VIEW: Clean, ultra-compact landscape list cards
+                // Mobile Layout Alternative
                 const card = document.createElement('div');
                 card.className = "p-3 bg-white border-b border-gray-200 shadow-sm flex flex-col gap-1.5";
                 
-                // Extracting Key primary data items dynamically
                 const primaryKey = columnKeys[0]; 
                 const primaryValue = row[primaryKey] || '-';
 
-                let cardHeader = `<div class="text-center font-extrabold text-[#16406C] text-base border-b pb-1 mb-1 border-gray-100 bg-blue-50/50 py-0.5 rounded">${primaryValue}</div>`;
+                let cardHeader = `<div class="text-center font-extrabold text-[#16406C] text-sm border-b pb-1 mb-1 border-gray-100 bg-blue-50/50 py-0.5 rounded">${primaryValue}</div>`;
                 
-                // Dynamic Side-by-Side Metadata Grid (Fits much more information on screen)
                 let cardGridItems = `<div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs px-1">`;
                 
                 columnKeys.forEach((key, index) => {
-                    if (index === 0) return; // Skip title heading item
+                    if (index === 0) return; 
                     
                     const cleanKey = key.trim();
                     const cleanLabel = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1).toLowerCase();

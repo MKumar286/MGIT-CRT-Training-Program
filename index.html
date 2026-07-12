@@ -11,60 +11,63 @@
     <!-- PapaParse Library to robustly parse the Google Sheets CSV stream -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
-<body class="bg-gray-50 antialiased min-h-screen flex flex-col" style="font-family: Arial, Helvetica, sans-serif;">
+<body class="bg-gray-100 antialiased min-h-screen flex flex-col" style="font-family: Arial, Helvetica, sans-serif;">
 
-    <!-- Header Section (Solid Midnight Navy Background with Solid Gold Headings) -->
+    <!-- Header Section (Fully Responsive Scaling to prevent truncation) -->
     <header class="bg-[#0B1528] text-white shadow-md sticky top-0 z-50 border-b-4 border-[#FFD700]">
-        <div class="max-w-[99%] mx-auto px-4 py-2.5 flex flex-row items-center gap-5">
+        <div class="max-w-[99%] mx-auto px-3 py-2 flex flex-row items-center gap-3 sm:gap-5">
             <!-- Official MGIT Logo -->
             <img src="logo.jpg" 
                  alt="MGIT Logo" 
-                 class="h-16 sm:h-20 w-auto object-contain bg-white p-1 rounded shadow-md shrink-0 border border-gray-100"
-                 onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT+LOGO'">
+                 class="h-14 w-auto sm:h-20 object-contain bg-white p-1 rounded shadow-md shrink-0 border border-gray-100"
+                 onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT'">
             
-            <!-- Headings Array -->
-            <div class="space-y-0.5">
-                <!-- 1. Main Heading in Solid Gold -->
-                <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight text-[#FFD700]">Mahatma Gandhi Institute of Technology(A)</h1>
-                <!-- 2. Sub Heading in Soft Metallic Gold Accent -->
-                <p class="text-base sm:text-lg font-bold text-[#E6C362] tracking-wide">Training & Placement Cell</p>
-                <!-- 3. Academic Year Sub Heading in Crisp White Contrast -->
-                <p class="text-xs sm:text-sm text-gray-100 font-bold">CRT Training Program Schedule for the Academic Year 2026-2027</p>
+            <!-- Headings Array with Fluid Text Sizes for Mobile Viewports -->
+            <div class="min-w-0 flex-1">
+                <h1 class="text-base sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight text-[#FFD700] truncate sm:whitespace-normal">
+                    Mahatma Gandhi Institute of Technology(A)
+                </h1>
+                <p class="text-xs sm:text-lg font-bold text-[#E6C362] tracking-wide truncate sm:whitespace-normal">
+                    Training & Placement Cell
+                </p>
+                <p class="text-[10px] sm:text-sm text-gray-200 font-bold tracking-tight sm:tracking-normal">
+                    CRT Training Program Schedule (2026-2027)
+                </p>
             </div>
 
-            <!-- Live Synchronizer Status Indicator -->
-            <div class="ml-auto hidden xl:flex items-center gap-2 bg-[#050B14] px-3 py-1.5 rounded-full text-xs font-bold border border-[#FFD700]/40 shadow-inner shrink-0 text-[#FFD700]">
+            <!-- Live Status Dot Indicator -->
+            <div class="hidden md:flex items-center gap-2 bg-[#050B14] px-3 py-1.5 rounded-full text-xs font-bold border border-[#FFD700]/40 shadow-inner shrink-0 text-[#FFD700]">
                 <span class="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse"></span>
                 <span>Live Sync Active</span>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Grid (Maximized Screen Fit) -->
-    <main class="max-w-[99%] w-full mx-auto px-2 py-2 flex-1 flex flex-col space-y-2 overflow-hidden">
+    <!-- Main Content Container -->
+    <main class="max-w-[99%] w-full mx-auto px-1 sm:px-2 py-2 flex-1 flex flex-col space-y-2 overflow-hidden">
         
-        <!-- Controls Bar: Compact Single Non-Scrolling Row Layout Without Refresh Button -->
-        <div class="bg-white p-2 rounded-xl shadow-sm border border-gray-200 flex flex-row items-center gap-2 w-full overflow-hidden shrink-0">
+        <!-- Controls Bar: Fully responsive Horizontal Swiping Filter Layout for Mobile -->
+        <div class="bg-white p-2 rounded-lg shadow-sm border border-gray-200 flex flex-row items-center gap-2 w-full overflow-hidden shrink-0">
             
             <!-- Minimized Search Input Element -->
-            <div class="relative w-48 sm:w-64 shrink-0">
-                <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
-                <input type="text" id="searchInput" placeholder="Search schedule..." 
-                       class="w-full pl-8 pr-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm font-bold transition">
+            <div class="relative w-36 sm:w-64 shrink-0">
+                <i class="fa-solid fa-magnifying-glass absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                <input type="text" id="searchInput" placeholder="Search..." 
+                       class="w-full pl-6 pr-1 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-xs sm:text-sm font-bold transition">
             </div>
             
-            <!-- Dynamic Filters Container -->
-            <div id="dynamicFiltersContainer" class="flex flex-row items-center gap-2 flex-1 min-w-0 overflow-hidden">
+            <!-- Dynamic Horizontal Scrollable Filter Track (Bypasses squishing buttons completely) -->
+            <div id="dynamicFiltersContainer" class="flex flex-row items-center gap-1.5 flex-1 min-w-0 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 py-0.5 whitespace-nowrap">
                 <!-- Dropdown fields are populated directly here via script -->
             </div>
         </div>
 
-        <!-- Timetable Dashboard Component (Container set to fill screen cleanly) -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
+        <!-- Timetable Dashboard Component -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 flex-1 flex flex-col overflow-hidden">
             <!-- Loading Interface -->
             <div id="loading" class="my-auto py-24 flex flex-col items-center justify-center gap-3 text-gray-500">
                 <i class="fa-solid fa-spinner animate-spin text-4xl text-blue-600"></i>
-                <p class="font-bold text-xl text-gray-600">Parsing live matrix components...</p>
+                <p class="font-bold text-lg text-gray-600">Parsing live schedule data...</p>
             </div>
 
             <!-- Error Notification Node -->
@@ -74,35 +77,35 @@
                 <p id="errorSubText" class="text-base text-gray-500 mt-2">Please verify network permissions.</p>
             </div>
 
-            <!-- Desktop View Mode (Constrained height with inner vertical scrolling capability) -->
+            <!-- Desktop View Mode (Unchanged: Minimal padding, centered, bold-free rows) -->
             <div class="overflow-x-auto overflow-y-auto hidden md:block w-full max-h-[calc(100vh-165px)] relative">
                 <table class="w-full border-collapse min-w-full table-fixed">
                     <thead>
                         <tr id="tableHeaderRow" class="text-white font-extrabold text-base tracking-wider text-center border-b-2 border-gray-300">
-                            <!-- Populated on data return structure with strict case logic -->
+                            <!-- Populated dynamically via script -->
                         </tr>
                     </thead>
                     <tbody id="tableBody" class="divide-y divide-gray-200 text-center">
-                        <!-- Table matrix contents rendered dynamically inside -->
+                        <!-- Desktop matrix rows injected here -->
                     </tbody>
                 </table>
             </div>
 
-            <!-- Mobile Card View Alternative (Scrollable for compact touch screens) -->
-            <div id="cardView" class="block md:hidden divide-y divide-gray-200 overflow-y-auto max-h-[calc(100vh-165px)]">
-                <!-- Fallback card components rendered here -->
+            <!-- Mobile Card View Alternative (Highly Compact Multi-Column Grid Layout) -->
+            <div id="cardView" class="block md:hidden divide-y-2 divide-gray-200 overflow-y-auto max-h-[calc(100vh-155px)] bg-gray-50">
+                <!-- Compact mobile data rows injected here -->
             </div>
 
-            <!-- Null Array Matches Notice -->
+            <!-- Null Matches Notice -->
             <div id="noResults" class="hidden my-auto py-24 text-center text-gray-500">
                 <i class="fa-regular fa-folder-open text-4xl mb-3"></i>
-                <p class="text-xl font-bold">No training data records map to selected filters.</p>
+                <p class="text-xl font-bold">No data records map to selected parameters.</p>
             </div>
         </div>
     </main>
 
     <!-- Footer System -->
-    <footer class="text-center py-2.5 text-xs font-semibold text-gray-400 border-t border-gray-200 bg-white mt-auto shrink-0">
+    <footer class="text-center py-2 text-[10px] sm:text-xs font-semibold text-gray-400 border-t border-gray-200 bg-white mt-auto shrink-0">
         &copy; 2026 Mahatma Gandhi Institute of Technology (MGIT). All rights reserved.
     </footer>
 
@@ -143,7 +146,7 @@
                     applyCombinedFiltering();
                 },
                 error: function(err) {
-                    handleFetchError(err.message || "Cross-Origin execution restrictions blocks local storage array access.");
+                    handleFetchError(err.message || "Cross-Origin restrictions blocked content execution loops.");
                 }
             });
         }
@@ -155,17 +158,16 @@
             
             loadingEl.classList.add('hidden');
             errorEl.classList.remove('hidden');
-            errorSubText.innerText = message + " Tip: Run this project within a local web server environment (like Live Server in VS Code).";
+            errorSubText.innerText = message;
         }
 
-        // 1. Generate Frozen Headers (Sticky top configuration applied to every individual TH item)
+        // 1. Generate Desktop Headers (Sticky Top)
         function renderHeaders() {
             const headerRow = document.getElementById('tableHeaderRow');
             headerRow.innerHTML = '';
             
             columnKeys.forEach(headerText => {
                 const th = document.createElement('th');
-                // Added "sticky top-0 z-20" to anchor columns firmly during scroll mechanics
                 th.className = "px-4 py-1.5 text-center bg-[#113359] font-extrabold text-base text-white tracking-wide border-x border-[#0b2440] sticky top-0 z-20 shadow-sm";
                 
                 const cleanText = headerText.trim();
@@ -175,7 +177,7 @@
             });
         }
 
-        // 2. Build Single Row Compact Bold Filters Track
+        // 2. Build Single Row Swipeable Filter Menus for Mobile
         function buildFilters() {
             const container = document.getElementById('dynamicFiltersContainer');
             container.innerHTML = '';
@@ -190,11 +192,12 @@
                 const cleanKey = key.trim();
                 const cleanLabel = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1).toLowerCase();
                 
-                select.className = "flex-1 min-w-0 border border-gray-300 rounded-lg p-1.5 text-xs sm:text-sm font-bold bg-white focus:ring-2 focus:ring-blue-500 outline-none cursor-pointer transition text-gray-900 shadow-sm truncate";
-                select.innerHTML = `<option value="" class="font-bold">All ${cleanLabel}s</option>`;
+                // shrink-0 prevents the dropdowns from folding down into squares on phone displays
+                select.className = "shrink-0 border border-gray-300 rounded-md px-2 py-1 text-xs font-bold bg-white focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer text-gray-800 shadow-sm max-w-[120px]";
+                select.innerHTML = `<option value="">All ${cleanLabel}s</option>`;
 
                 uniqueValues.forEach(val => {
-                    select.innerHTML += `<option value="${val}" class="font-bold">${val}</option>`;
+                    select.innerHTML += `<option value="${val}">${val}</option>`;
                 });
 
                 select.addEventListener('change', (e) => {
@@ -206,7 +209,7 @@
             });
         }
 
-        // 3. Combined Filtering Calculations Track
+        // 3. Combined Multi-Column Data Processing Logic
         function applyCombinedFiltering() {
             const globalSearchTerm = document.getElementById('searchInput').value.toLowerCase();
             
@@ -226,7 +229,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Matrix Table Generator (Maintained regular weight values and ultra-tight padding)
+        // 4. Compact Mobile Layout Matrix Renderer
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -242,6 +245,7 @@
             noResults.classList.add('hidden');
 
             data.forEach(row => {
+                // Desktop rendering loop (keeps the requested compact format)
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-blue-50/50 odd:bg-white even:bg-gray-50/40 transition border-b border-gray-200 text-center";
                 
@@ -253,27 +257,40 @@
                 });
                 tableBody.appendChild(tr);
 
-                // Mobile Layout Alternative
+                // NEW MOBILE VIEW: Clean, ultra-compact landscape list cards
                 const card = document.createElement('div');
-                card.className = "p-5 space-y-2 bg-white text-center border-b border-gray-200";
+                card.className = "p-3 bg-white border-b border-gray-200 shadow-sm flex flex-col gap-1.5";
                 
-                let cardContent = ``;
+                // Extracting Key primary data items dynamically
+                const primaryKey = columnKeys[0]; 
+                const primaryValue = row[primaryKey] || '-';
+
+                let cardHeader = `<div class="text-center font-extrabold text-[#16406C] text-base border-b pb-1 mb-1 border-gray-100 bg-blue-50/50 py-0.5 rounded">${primaryValue}</div>`;
+                
+                // Dynamic Side-by-Side Metadata Grid (Fits much more information on screen)
+                let cardGridItems = `<div class="grid grid-cols-2 gap-x-4 gap-y-1 text-xs px-1">`;
+                
                 columnKeys.forEach((key, index) => {
+                    if (index === 0) return; // Skip title heading item
+                    
                     const cleanKey = key.trim();
                     const cleanLabel = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1).toLowerCase();
-                    
-                    if(index === 0) {
-                        cardContent += `<div class="font-extrabold text-[#16406C] text-xl pb-1 mb-2 border-b border-gray-100">${row[key]}</div>`;
-                    } else {
-                        cardContent += `<div class="text-sm"><span class="text-gray-400 text-xs uppercase block font-bold tracking-wider">${cleanLabel}</span> <span class="font-medium text-gray-900 text-base">${row[key] || '-'}</span></div>`;
-                    }
+                    const cellValue = row[key] || '-';
+
+                    cardGridItems += `
+                        <div class="flex flex-row justify-between items-center border-b border-gray-50 py-0.5">
+                            <span class="text-gray-400 font-bold uppercase text-[10px] tracking-tight">${cleanLabel}:</span>
+                            <span class="font-bold text-gray-800 text-right truncate pl-2 max-w-[70%]">${cellValue}</span>
+                        </div>`;
                 });
-                card.innerHTML = cardContent;
+                
+                cardGridItems += `</div>`;
+                card.innerHTML = cardHeader + cardGridItems;
                 cardView.appendChild(card);
             });
         }
 
-        // Run initialization routines on browser load
+        // Initialize system bindings
         window.addEventListener('DOMContentLoaded', fetchScheduleData);
         document.getElementById('searchInput').addEventListener('input', applyCombinedFiltering);
     </script>

@@ -18,7 +18,7 @@
                  onerror="this.src='https://placehold.co/160x160/ffffff/16406c?text=MGIT'">
             
             <div class="min-w-0 flex-1">
-                <h1 class="text-base sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight text-[#FFD700] truncate sm:whitespace-normal">
+                <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight leading-tight text-[#FFD700] truncate sm:whitespace-normal">
                     Mahatma Gandhi Institute of Technology(A)
                 </h1>
                 <p class="text-xs sm:text-lg font-bold text-[#E6C362] tracking-wide truncate sm:whitespace-normal">
@@ -154,12 +154,26 @@
             });
         }
 
-        // 2. Build Single Row Swipeable Filter Menus for Mobile
+        // 2. Build Single Row Swipeable Filter Menus with Forced Trainer Position
         function buildFilters() {
             const container = document.getElementById('dynamicFiltersContainer');
             container.innerHTML = '';
 
-            columnKeys.forEach(key => {
+            // Create a local copy of keys to safely manipulate the filter sorting order
+            let filterKeys = [...columnKeys];
+
+            // Rearrange array to target the "Trainer" column and force it into the second position (Index 1)
+            const trainerIndex = filterKeys.findIndex(k => k.trim().toLowerCase() === 'trainer');
+            if (trainerIndex !== -1) {
+                const trainerKey = filterKeys.splice(trainerIndex, 1)[0];
+                if (filterKeys.length >= 1) {
+                    filterKeys.splice(1, 0, trainerKey); // Insert exactly at index position 1
+                } else {
+                    filterKeys.unshift(trainerKey);
+                }
+            }
+
+            filterKeys.forEach(key => {
                 const uniqueValues = [...new Set(localScheduleData.map(item => item[key]))]
                                         .filter(val => val !== undefined && val !== null && val.trim() !== '')
                                         .sort();
@@ -169,7 +183,7 @@
                 const cleanKey = key.trim();
                 const cleanLabel = cleanKey.charAt(0).toUpperCase() + cleanKey.slice(1).toLowerCase();
                 
-                select.className = "shrink-0 border border-gray-300 rounded-md px-2 py-1 text-xs font-bold bg-white focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer text-gray-800 shadow-sm max-w-[120px]";
+                select.className = "shrink-0 border border-gray-300 rounded-md px-2 py-1 text-xs font-bold bg-white focus:ring-1 focus:ring-blue-500 outline-none cursor-pointer text-gray-800 shadow-sm min-w-[110px] max-w-[130px]";
                 select.innerHTML = `<option value="">All ${cleanLabel}s</option>`;
 
                 uniqueValues.forEach(val => {
@@ -205,7 +219,7 @@
             renderData(filteredResult);
         }
 
-        // 4. Compact Data Matrix Renderer
+        // 4. Compact Data Matrix Renderer (Clean small font text bounds)
         function renderData(data) {
             const tableBody = document.getElementById('tableBody');
             const cardView = document.getElementById('cardView');
@@ -227,7 +241,6 @@
                 
                 columnKeys.forEach(key => {
                     const td = document.createElement('td');
-                    // Font size modified slightly down to a crisp text-sm to pack structural rows clean
                     td.className = "px-4 py-1 text-center align-middle text-sm font-normal text-gray-800 border-x border-gray-100/70 tracking-wide break-words";
                     td.innerText = row[key] !== undefined && row[key] !== null ? row[key] : '-';
                     tr.appendChild(td);
